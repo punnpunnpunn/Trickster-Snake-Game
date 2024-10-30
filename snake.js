@@ -5,6 +5,7 @@ class Snake {
         this.snakeChangeX = snakeChangeX
         this.snakeChangeY = snakeChangeY
         this.body =  [[snakeX, snakeY], [snakeX - blockSize, snakeY - blockSize]]
+        this.score = 0
     }
     drawSnake() {
         context.fillStyle="lime";
@@ -21,6 +22,10 @@ class Snake {
     }
     updateTail() {
         [this.tailX, this.tailY] = this.body.shift();
+    }
+    updateScore() {
+        this.score += 1
+        return this.score
     }
     checkGameOver(){
         return (arrayIncludes(this.body.slice(0,-1), [this.snakeX, this.snakeY]))
@@ -73,12 +78,9 @@ function arrayIncludes (a, b) {
 }
 
 function changeDirection(key) {
-    console.log(snake.snakeChangeY == 0)
     if (key.code == "ArrowUp" && snake.snakeChangeY == 0) {
         snake.snakeChangeX = 0;
         snake.snakeChangeY = 1;
-        console.log(snake.snakeChangeX)
-        console.log(snake.snakeChangeY)
     }
     else if (key.code == "ArrowDown" && snake.snakeChangeY == 0) {
         snake.snakeChangeX = 0;
@@ -91,6 +93,23 @@ function changeDirection(key) {
     else if (key.code == "ArrowRight" && snake.snakeChangeX == 0) {
         snake.snakeChangeX = -1;
         snake.snakeChangeY = 0;
+    }
+}
+
+function update() {
+    snake.updateSnake();
+    snake.drawSnake();
+    if (food.foodX == snake.snakeX && food.foodY == snake.snakeY) {
+        food.placeFood(snake);
+        food.drawFood();
+        score.innerHTML = `Score: ${snake.updateScore()}`
+    }
+    else {
+        snake.updateTail();
+        snake.drawTail();
+    }
+    if (snake.checkGameOver()) {
+        game.gameOver();
     }
 }
 
@@ -108,25 +127,11 @@ window.onload = function() {
     board.height = rows * blockSize;
     board.width = cols * blockSize;
     context = board.getContext("2d");
-    document.addEventListener("keydown", changeDirection)
     game = new Game(board, context)
+    score = document.getElementById("score")
+    document.addEventListener("keydown", changeDirection)
     game.drawBoard();
+    score.innerHTML = "Score: 0"
     food.drawFood();
     intervalID = setInterval(update, 100);
-}
-
-function update() {
-    snake.updateSnake();
-    snake.drawSnake();
-    if (food.foodX == snake.snakeX && food.foodY == snake.snakeY) {
-        food.placeFood(snake);
-        food.drawFood();
-    }
-    else {
-        snake.updateTail();
-        snake.drawTail();
-    }
-    if (snake.checkGameOver()) {
-        game.gameOver();
-    }
 }
