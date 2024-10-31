@@ -23,3 +23,8 @@ body {
 #score {
     font-size: xx-large;
 }
+
+#play {
+    font-size: 20px;
+    border: 2px solid;
+}

@@ -113,14 +113,25 @@ function update() {
     }
 }
 
+function play() {
+    snake = new Snake(blockSize * 5, blockSize * 10, 1, 0)
+    food = new Food(blockSize * 10, blockSize * 10)
+    clearInterval(intervalID)
+    game.drawBoard();
+    document.addEventListener("keydown", changeDirection)
+    score.innerHTML = "Score: 0"
+    food.drawFood();
+    intervalID = setInterval(update, 100);
+}
+
 //board
 var blockSize = 25;
 var rows = 18;
 var cols = 18;
 var game;
 var intervalID;
-const snake = new Snake(blockSize * 5, blockSize * 10, 1, 0)
-const food = new Food(blockSize * 10, blockSize * 10)
+var snake = new Snake(blockSize * 5, blockSize * 10, 1, 0)
+var food = new Food(blockSize * 10, blockSize * 10)
 
 window.onload = function() {
     board = document.getElementById("board");
@@ -129,9 +140,8 @@ window.onload = function() {
     context = board.getContext("2d");
     game = new Game(board, context)
     score = document.getElementById("score")
-    document.addEventListener("keydown", changeDirection)
+    playbtn = document.getElementById("play")
     game.drawBoard();
     score.innerHTML = "Score: 0"
-    food.drawFood();
-    intervalID = setInterval(update, 100);
+    playbtn.onclick = function() {play()}
 }
