@@ -12,8 +12,20 @@ class Snake {
         context.fillRect(this.snakeX, this.snakeY, blockSize, blockSize);
     }
     updateSnake() {
-        this.snakeX = (this.snakeChangeX * blockSize + this.snakeX + board.width) % (cols * blockSize);
-        this.snakeY = (this.snakeChangeY * blockSize + this.snakeY + board.height) % (rows * blockSize);
+        // random warping
+        if (this.snakeChangeX * blockSize + this.snakeX < 0 || this.snakeChangeX * blockSize + this.snakeX >= board.width){
+            this.snakeX = (this.snakeChangeX * blockSize + this.snakeX + board.width) % (cols * blockSize);
+            this.snakeY = Math.floor(Math.random() * rows) * blockSize
+        }
+        else if (this.snakeChangeY * blockSize + this.snakeY < 0 || this.snakeChangeY * blockSize + this.snakeY >= board.height){
+            this.snakeX = Math.floor(Math.random() * cols) * blockSize
+            this.snakeY = (this.snakeChangeY * blockSize + this.snakeY + board.height) % (rows * blockSize);
+        }
+        // normal movement
+        else {
+            this.snakeX = this.snakeChangeX * blockSize + this.snakeX
+            this.snakeY = this.snakeChangeY * blockSize + this.snakeY
+        }
         this.body.push([this.snakeX, this.snakeY])
     }
     drawTail() {
@@ -130,8 +142,8 @@ var rows = 18;
 var cols = 18;
 var game;
 var intervalID;
-var snake = new Snake(blockSize * 5, blockSize * 10, 1, 0)
-var food = new Food(blockSize * 10, blockSize * 10)
+var snake
+var food
 
 window.onload = function() {
     board = document.getElementById("board");

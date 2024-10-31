@@ -27,4 +27,6 @@ body {
 #play {
     font-size: 20px;
     border: 2px solid;
+    border-radius: 7px;
+    cursor: pointer;
 }
