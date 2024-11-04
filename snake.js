@@ -51,9 +51,11 @@ class Food {
     constructor(foodX, foodY) {
         this.foodX = foodX
         this.foodY = foodY
+        this.color
     }
-    drawFood() {
-        context.fillStyle="red";
+    drawFood(color) {
+        this.color = color
+        context.fillStyle=color;
         context.fillRect(this.foodX, this.foodY, blockSize, blockSize);
     }
     placeFood(snake) {
@@ -62,6 +64,9 @@ class Food {
             this.foodY = Math.floor(Math.random()* rows) * blockSize;
         }
         while (arrayIncludes(snake.body, [this.foodX, this.foodY]))
+    }
+    getColor() {
+        return this.color
     }
 }
 
@@ -107,29 +112,40 @@ function arrayIncludes (a, b) {
 }
 
 function changeDirection(key) {
-    if (key.code == "ArrowUp" && snake.snakeChangeY == 0) {
-        snake.snakeChangeX = 0;
-        snake.snakeChangeY = 1;
-    }
-    else if (key.code == "ArrowDown" && snake.snakeChangeY == 0) {
+    if (key.code == controls[0] && snake.snakeChangeY == 0) {
         snake.snakeChangeX = 0;
         snake.snakeChangeY = -1;
     }
-    else if (key.code == "ArrowLeft" && snake.snakeChangeX == 0) {
-        snake.snakeChangeX = 1;
+    else if (key.code == controls[1] && snake.snakeChangeY == 0) {
+        snake.snakeChangeX = 0;
+        snake.snakeChangeY = 1;
+    }
+    else if (key.code == controls[2] && snake.snakeChangeX == 0) {
+        snake.snakeChangeX = -1;
         snake.snakeChangeY = 0;
     }
-    else if (key.code == "ArrowRight" && snake.snakeChangeX == 0) {
-        snake.snakeChangeX = -1;
+    else if (key.code == controls[3] && snake.snakeChangeX == 0) {
+        snake.snakeChangeX = 1;
         snake.snakeChangeY = 0;
     }
 }
 
+function changeControls(color) {
+    if (color == "blue")
+        controls = [controls[1], controls[0], controls[3], controls[2]]
+}
+
 function update() {
     if (food.foodX == snake.snakeX && food.foodY == snake.snakeY) {
+        changeControls(food.getColor())
         food.placeFood(snake);
-        food.drawFood();
         score.innerHTML = `Score: ${snake.updateScore()}`
+        if (snake.score % 5 == 0) {
+            food.drawFood("blue")
+        }
+        else {
+            food.drawFood("red");
+        }
     }
     else {
         snake.updateTail();
@@ -154,7 +170,7 @@ function play() {
     game.drawBoard();
     document.addEventListener("keydown", changeDirection)
     score.innerHTML = "Score: 0"
-    food.drawFood();
+    food.drawFood("red");
     intervalID = setInterval(update, 100);
 }
 
@@ -169,6 +185,7 @@ var food
 var rick
 var rickroll = document.getElementById("rickaudio")
 var rickrollOn = false
+var controls = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"] // up, down, left, right
 
 window.onload = function() {
     board = document.getElementById("board");
