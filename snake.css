@@ -13,6 +13,14 @@ body {
     width: 200px;
 }
 
+#controls h2 {
+    margin: 2px auto;
+    width: 60px;
+    text-align: center;
+    border: 2px solid;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
 #board{
     width: 400px;
     height: 400px;
@@ -29,8 +37,4 @@ body {
     border: 2px solid;
     border-radius: 7px;
     cursor: pointer;
-}
-
-#rick {
-    align-items: flex-start;
 }

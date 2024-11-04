@@ -94,9 +94,9 @@ class Rickroll {
         this.audio = rickroll
     }
     play() {
-        document.getElementById("rickvid").src="Rickroll.mp4";
         this.audio.src = 'Rickroll.mp4';
         this.audio.play();
+        document.getElementById("rickvid").src="Rickroll.mp4";
     }
     stop() {
         this.audio.pause();
@@ -130,9 +130,45 @@ function changeDirection(key) {
     }
 }
 
+function keydown(key) {
+    if (key.code == controls[0]) {
+        up.style.backgroundColor = "grey"
+    }
+    if (key.code == controls[1]) {
+        down.style.backgroundColor = "grey"
+    }    
+    if (key.code == controls[2]) {
+        left.style.backgroundColor = "grey"
+    }
+    if (key.code == controls[3]) {
+        right.style.backgroundColor = "grey"
+    }
+}
+
+function keyup(key) {
+    if (key.code == controls[0]) {
+        up.style.backgroundColor = "white"
+    }
+    if (key.code == controls[1]) {
+        down.style.backgroundColor = "white"
+    }    
+    if (key.code == controls[2]) {
+        left.style.backgroundColor = "white"
+    }
+    if (key.code == controls[3]) {
+        right.style.backgroundColor = "white"
+    }
+}
+
 function changeControls(color) {
-    if (color == "blue")
+    if (color == "blue") {
         controls = [controls[1], controls[0], controls[3], controls[2]]
+        controlHTML = [controlHTML[1], controlHTML[0], controlHTML[3], controlHTML[2]]
+    }
+    up.innerHTML = controlHTML[0]
+    down.innerHTML = controlHTML[1]
+    left.innerHTML = controlHTML[2]
+    right.innerHTML = controlHTML[3]
 }
 
 function update() {
@@ -156,7 +192,7 @@ function update() {
     if (snake.checkGameOver()) {
         game.gameOver();
     }
-    if (snake.score >= 10 && !rickrollOn) {
+    if (snake.score > 20 && !rickrollOn) {
         rick = new Rickroll(rickroll)
         rick.play()
         rickrollOn = true
@@ -169,8 +205,12 @@ function play() {
     food = new Food(blockSize * 10, blockSize * 10)
     game.drawBoard();
     document.addEventListener("keydown", changeDirection)
+    document.addEventListener("keydown", keydown)
+    document.addEventListener("keyup", keyup)
     score.innerHTML = "Score: 0"
     food.drawFood("red");
+    controls = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"] // up, down, left, right
+    controlHTML = ["↑","↓","←","→"]
     intervalID = setInterval(update, 100);
 }
 
@@ -185,7 +225,12 @@ var food
 var rick
 var rickroll = document.getElementById("rickaudio")
 var rickrollOn = false
-var controls = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"] // up, down, left, right
+var controls
+var controlHTML
+up = document.getElementById("up")
+down = document.getElementById("down")
+left = document.getElementById("left")
+right = document.getElementById("right")
 
 window.onload = function() {
     board = document.getElementById("board");
