@@ -10,7 +10,7 @@ body {
     justify-content: center;
 }
 .left, .right{
-    width: 100px;
+    width: 200px;
 }
 
 #board{
@@ -29,4 +29,8 @@ body {
     border: 2px solid;
     border-radius: 7px;
     cursor: pointer;
+}
+
+#rick {
+    align-items: flex-start;
 }

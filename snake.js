@@ -39,6 +39,9 @@ class Snake {
         this.score += 1
         return this.score
     }
+    getScore() {
+        return this.score
+    }
     checkGameOver(){
         return (arrayIncludes(this.body.slice(0,-1), [this.snakeX, this.snakeY]))
     }
@@ -81,6 +84,20 @@ class Game {
     }
 }
 
+class Rickroll {
+    constructor(rickroll) {
+        this.audio = rickroll
+    }
+    play() {
+        document.getElementById("rickvid").src="Rickroll.mp4";
+        this.audio.src = 'Rickroll.mp4';
+        this.audio.play();
+    }
+    stop() {
+        this.audio.pause();
+    }
+}
+
 function arrayEquals (a,b) {
     return a.length === b.length && a.every((element, index) => element === b[index]);
 }
@@ -109,8 +126,6 @@ function changeDirection(key) {
 }
 
 function update() {
-    snake.updateSnake();
-    snake.drawSnake();
     if (food.foodX == snake.snakeX && food.foodY == snake.snakeY) {
         food.placeFood(snake);
         food.drawFood();
@@ -120,15 +135,22 @@ function update() {
         snake.updateTail();
         snake.drawTail();
     }
+    snake.updateSnake();
+    snake.drawSnake();
     if (snake.checkGameOver()) {
         game.gameOver();
+    }
+    if (snake.score >= 10 && !rickrollOn) {
+        rick = new Rickroll(rickroll)
+        rick.play()
+        rickrollOn = true
     }
 }
 
 function play() {
+    game.gameOver()
     snake = new Snake(blockSize * 5, blockSize * 10, 1, 0)
     food = new Food(blockSize * 10, blockSize * 10)
-    clearInterval(intervalID)
     game.drawBoard();
     document.addEventListener("keydown", changeDirection)
     score.innerHTML = "Score: 0"
@@ -144,6 +166,9 @@ var game;
 var intervalID;
 var snake
 var food
+var rick
+var rickroll = document.getElementById("rickaudio")
+var rickrollOn = false
 
 window.onload = function() {
     board = document.getElementById("board");
