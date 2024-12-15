@@ -12,13 +12,23 @@ class Snake {
         context.fillRect(this.snakeX, this.snakeY, blockSize, blockSize);
     }
     updateSnake() {
-        // random warping
+        // warping
         if (this.snakeChangeX * blockSize + this.snakeX < 0 || this.snakeChangeX * blockSize + this.snakeX >= board.width){
             this.snakeX = (this.snakeChangeX * blockSize + this.snakeX + board.width) % (cols * blockSize);
-            this.snakeY = Math.floor(Math.random() * rows) * blockSize
+            if (Math.random() <= 0.5) { // warps randomly half the time
+                this.snakeY = Math.floor(Math.random() * rows) * blockSize
+            }
+            else {
+                this.snakeY = this.snakeChangeY * blockSize + this.snakeY
+            }
         }
         else if (this.snakeChangeY * blockSize + this.snakeY < 0 || this.snakeChangeY * blockSize + this.snakeY >= board.height){
-            this.snakeX = Math.floor(Math.random() * cols) * blockSize
+            if (Math.random() <= 0.5) {
+                this.snakeX = Math.floor(Math.random() * cols) * blockSize
+            }
+            else {
+                this.snakeX = this.snakeChangeX * blockSize + this.snakeX
+            }
             this.snakeY = (this.snakeChangeY * blockSize + this.snakeY + board.height) % (rows * blockSize);
         }
         // normal movement
@@ -86,6 +96,8 @@ class Game {
         this.context.fillStyle = "white"
         this.context.font = "50px Arial"
         this.context.fillText("Game Over", 100, Math.floor(this.board.height/2)+50/2)
+        rickrollOn = false
+        rick.stop()
     }
 }
 
@@ -99,7 +111,8 @@ class Rickroll {
         document.getElementById("rickvid").src="Rickroll.mp4";
     }
     stop() {
-        this.audio.pause();
+        this.audio.src = "";
+        document.getElementById("rickvid").src="";
     }
 }
 
@@ -189,18 +202,17 @@ function update() {
     }
     snake.updateSnake();
     snake.drawSnake();
-    if (snake.checkGameOver()) {
-        game.gameOver();
-    }
     if (snake.score > 20 && !rickrollOn) {
         rick = new Rickroll(rickroll)
         rick.play()
         rickrollOn = true
     }
+    if (snake.checkGameOver()) {
+        game.gameOver();
+    }
 }
 
 function play() {
-    game.gameOver()
     snake = new Snake(blockSize * 5, blockSize * 10, 1, 0)
     food = new Food(blockSize * 10, blockSize * 10)
     game.drawBoard();
@@ -211,6 +223,7 @@ function play() {
     food.drawFood("red");
     controls = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"] // up, down, left, right
     controlHTML = ["↑","↓","←","→"]
+    changeControls("red")
     intervalID = setInterval(update, 100);
 }
 
@@ -222,8 +235,8 @@ var game;
 var intervalID;
 var snake
 var food
-var rick
 var rickroll = document.getElementById("rickaudio")
+var rick = new Rickroll(rickroll)
 var rickrollOn = false
 var controls
 var controlHTML
@@ -232,15 +245,13 @@ down = document.getElementById("down")
 left = document.getElementById("left")
 right = document.getElementById("right")
 
-window.onload = function() {
-    board = document.getElementById("board");
-    board.height = rows * blockSize;
-    board.width = cols * blockSize;
-    context = board.getContext("2d");
-    game = new Game(board, context)
-    score = document.getElementById("score")
-    playbtn = document.getElementById("play")
-    game.drawBoard();
-    score.innerHTML = "Score: 0"
-    playbtn.onclick = function() {play()}
-}
+board = document.getElementById("board");
+board.height = rows * blockSize;
+board.width = cols * blockSize;
+context = board.getContext("2d");
+game = new Game(board, context)
+score = document.getElementById("score")
+playbtn = document.getElementById("play")
+game.drawBoard();
+score.innerHTML = "Score: 0"
+playbtn.onclick = function() {play()}
